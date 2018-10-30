@@ -1,0 +1,7 @@
+echo 'activate_parsecmgmt : command to activate parsecmgmt'
+function activate_parsecmgmt(){
+	cd /data/i-am-mkbera/parsec-3.0/
+    source env.sh
+    cd -
+    echo 'parsecmgmt activated'
+}
