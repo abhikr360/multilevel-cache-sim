@@ -1,5 +1,9 @@
 import os
 
-run_L1L2cache_LRU = './L1L2cache_LRU'
+run_tasks = [ 
+	# './L1L2cache_LRU',
+	'./LLC_MIN',
+]
 
-os.system(run_L1L2cache_LRU)
+for r in run_tasks:
+	os.system(r)
