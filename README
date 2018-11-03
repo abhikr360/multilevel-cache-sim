@@ -3,3 +3,11 @@ course project for CS622
 
 notes on how to use parsecmgmt with pin:
 https://courses.cs.washington.edu/courses/cse471/14sp/hw/BranchPredictionHomework.pdf
+
+code base for L1L2_LRU:
+http://www.cse.iitk.ac.in/~mainakc/2018Autumn/lec622/assignment1-solution/inclusive.c
+
+code base for LLC_MIN:
+http://www.cse.iitk.ac.in/~mainakc/2018Autumn/lec622/assignment1-solution/inclusive-FA-MIN.c
+
+
