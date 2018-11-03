@@ -66,7 +66,7 @@ Core* create_cpu (int num_cores) {
 
 int main (int argc, char **argv)
 {
-   int j, L1setid, L2setid, INVsetid, maxindex, tid;
+   int j, L1setid, L2setid, INVsetid, maxindex, tid, thread_id;
    unsigned long long block_addr, max;
    char output_name[256], input_name[256];
    FILE * fp_in;
@@ -77,29 +77,32 @@ int main (int argc, char **argv)
 
    cpu = create_cpu(NUM_CORES);
 
+   if (argc != 2) {
+      printf("Need two arguments: input file. Aborting...\n");
+      exit (1);
+   }
 
-   // sprintf(input_name, "addrtrace_%s.out", argv[1]);
-   sprintf(input_name, "../data/temp");
-   // sprintf(output_name, "%s.LLCtrace", argv[1])
-   sprintf(output_name, "../data/temp.out");
+
+   sprintf(input_name, "%s", argv[1]);
+   // sprintf(input_name, "../data/temp");
+   sprintf(output_name, "%s", argv[2]);
+   // sprintf(output_name, "../data/temp.out");
    fp_in = fopen(input_name, "r");
    fp_out = fopen(output_name, "w");
    assert(fp_in != NULL);
    assert(fp_out != NULL);
-
    while (!feof(fp_in)) {
       fscanf(fp_in, "%d %llu", &tid, &block_addr);
+      tid = tid % NUM_CORES;
 
       L1setid = block_addr % L1_NUMSET ;
       L2setid = block_addr % L2_NUMSET;
-
-      // L1 cache lookup
+      /* L1 cache lookup */
       for (l1way=0; l1way<L1_ASSOC; l1way++) {
          if (cpu[tid].L1DataCache[L1setid][l1way].tag == block_addr) {
             break;
          }
       }
-
       if (l1way==L1_ASSOC) {  
       /*  L1 cache miss; L2 cache lookup */
          for (l2way=0; l2way<L2_ASSOC; l2way++) {
@@ -174,9 +177,8 @@ int main (int argc, char **argv)
          cpu[tid].L1DataCache[L1setid][j].lru++;
       }
       cpu[tid].L1DataCache[L1setid][l1way].lru = 0;
-
    }
-   printf("Done reading file!\n");
+   printf("*** Done reading file! ***\n");
 
    fclose(fp_in);
    fclose(fp_out);

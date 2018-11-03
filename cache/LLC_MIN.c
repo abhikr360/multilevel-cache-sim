@@ -78,10 +78,10 @@ int main (int argc, char **argv)
    int hash_index;
    CacheTag** LLCcache;
 
-   // if (argc != 2) {
-   //    printf("Need two arguments: input file. Aborting...\n");
-   //    exit (1);
-   // }
+   if (argc != 2) {
+      printf("Need two arguments: input file. Aborting...\n");
+      exit (1);
+   }
 
    LLCcache = (CacheTag**)create_cache(LLC_NUMSET, LLC_ASSOC);
    ht = (HashTableEntry*)create_hash_table(SIZE);
@@ -95,10 +95,12 @@ int main (int argc, char **argv)
    }
 
    /* Build the hash table of accesses */
-   // sprintf(input_name, "%s", argv[1]);
-   sprintf(input_name, "../data/temp");
+   sprintf(input_name, "%s", argv[1]);
+   sprintf(output_name, "%s", argv[2]);
    fp_in = fopen(input_name, "r");
+   fp_out = fopen(output_name, "w");
    assert(fp_in != NULL);
+   assert(fp_out != NULL);
 
    while (!feof(fp_in)) {
       fscanf(fp_in, "%d %llu", &tid, &block_addr);
@@ -223,6 +225,7 @@ int main (int argc, char **argv)
       
    }
    fclose(fp_in);
+
    printf("Done reading file!\n");
 
    /* Sanity check terminal state
@@ -237,11 +240,6 @@ int main (int argc, char **argv)
       }
    }
 
-
-   // sprintf(dest_file_name, "%s.inclusion-FA-MIN.L2%d", argv[1], L2_NUMSET/2);
-   // fp = fopen(dest_file_name, "w");
-   // assert(fp != NULL);
-   // fprintf(fp, "L3: %llu, L2: %llu\n", miss, l2_miss);
-   // fclose(fp);
+   fclose(fp_out);
    return 0;
 }
