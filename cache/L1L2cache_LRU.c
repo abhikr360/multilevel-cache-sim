@@ -77,7 +77,7 @@ int main (int argc, char **argv)
 
    cpu = create_cpu(NUM_CORES);
 
-   if (argc != 2) {
+   if (argc != 3) {
       printf("Need two arguments: input file. Aborting...\n");
       exit (1);
    }

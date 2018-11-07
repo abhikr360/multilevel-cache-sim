@@ -4,7 +4,7 @@ progs = [
 	'blackscholes',
 	'bodytrack',
 	'canneal',
-	'dedup',
+	# 'dedup',
 	'facesim',
 	'ferret',
 	'fluidanimate',
@@ -13,13 +13,14 @@ progs = [
 	'streamcluster',
 	'swaptions',
 	'vips',
-	'x264',
+	# 'x264',
 ]
 
+# progs = [ 'canneal', ]
 for p in progs:
-	command = 'time python run.py --tool tools/addrtrace --size simmedium --exe {}'.format(p)
+	command = 'time python run.py --tool tools/addrtrace --exe {} --size simsmall'.format(p)
 	os.system(command)
-	rename = 'mv output/addrtrace.out output/addrtrace_{}.out'.format(p)
+	rename = 'mv output/addrtrace.out output/simsmall/addrtrace_{}.out'.format(p)
 	os.system(rename)
 
-	
+

@@ -2,18 +2,18 @@ from utilities.parallel_prog import run_parallel_progs
 import os
 benchmarks = [
 	'blackscholes',
-	# 'bodytrack',
-	# 'canneal',
-	# 'deadup',
-	# 'facesim',
-	# 'ferret',
-	# 'fluidanimate',
-	# 'freqmine',
-	# 'raytrace',
-	# 'streamcluster',
-	# 'swaptions',
-	# 'vips',
-	# 'x264',
+	'bodytrack',
+	'canneal',
+	# 'dedup', ERROR
+	'facesim',
+	'ferret',
+	'fluidanimate',
+	'freqmine',
+	'raytrace',
+	'streamcluster',
+	'swaptions',
+	'vips',
+	# 'x264', ERROR
 ]
 
 
