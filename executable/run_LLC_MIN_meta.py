@@ -32,7 +32,7 @@ for p in progs:
 
 	input_file = '{}/simmedium/{}.LLCtrace'.format(input_folder, p)
 	output_file =  '{}/simmedium/{}.LLCmeta'.format(output_folder, p)
-	sharing_history_file = '{}/simsmall/{}.LLC_sharing_history'.format(history_folder, p)
+	sharing_history_file = '{}/simmedium/{}.LLC_sharing_history'.format(history_folder, p)
 
 	command = '{} {} {} {}'.format(exe, input_file, output_file, sharing_history_file)
 	cmd_list.append(command)

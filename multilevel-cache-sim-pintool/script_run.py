@@ -1,3 +1,11 @@
+import argparse
+
+parser = argparse.ArgumentParser(description='driver script for run.py')
+parser.add_argument('--size',  type=str, default='test',
+                    help='size of the benchmark suite')
+args = parser.parse_args()
+
+
 import os
 
 progs = [
@@ -18,9 +26,9 @@ progs = [
 
 # progs = [ 'canneal', ]
 for p in progs:
-	command = 'time python run.py --tool tools/addrtrace --exe {} --size simsmall'.format(p)
+	command = 'time python run.py --tool tools/addrtrace --exe {} --size {}'.format(p, args.size)
 	os.system(command)
-	rename = 'mv output/addrtrace.out output/simsmall/addrtrace_{}.out'.format(p)
+	rename = 'mv output/addrtrace.out output/{}/addrtrace_{}.out'.format(args.size, p)
 	os.system(rename)
-
+	
 

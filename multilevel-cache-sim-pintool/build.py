@@ -17,12 +17,12 @@ benchmarks = [
 ]
 
 
-source_cmd = 'source /data/i-am-mkbera/parsec-3.0/env.sh'
-os.system(source_cmd)
-path = '/data/i-am-mkbera/parsec-3.0/bin/parsecmgmt'
+# source_cmd = 'source /data/i-am-mkbera/parsec-3.0/env.sh'
+# os.system(source_cmd)
+# path = '/data/i-am-mkbera/parsec-3.0/bin/parsecmgmt'
 commands = []
 for bm in benchmarks:
-	build_cmd = '{} -a build -p {}'.format(path, bm)
+	build_cmd = 'parsecmgmt -a build -p {}'.format(bm)
 	# os.system(build_cmd)
 	commands.append(build_cmd)
 

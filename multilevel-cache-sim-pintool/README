@@ -1,0 +1,61 @@
+NOTE: since the parsecmgmt tool gave some weird errors if the pintool was mentioned with relative path, I had to use absolute paths everywhere;
+so, please make appropriate modifications for the code to work
+
+how to setup pin tool:
+----------------------
+pin_setup.txt
+borrowed from: http://www.cse.iitk.ac.in/~mainakc/2018Autumn/lec622/pin_setup.txt
+
+tool description:
+-----------------
+<*> bashrc : contains the function that can activate parsecmgmt, so that one does not have to use the path of parsecmgmt to invoke it
+
+	## how to use: in command line, execute the following commands, given in single quotes:
+		'source bashrc'
+		'activate_parsecmgmt'
+
+	
+	NOTE: instead of using this script, you can just go to the parsec folder and do
+		'source env.sh'
+
+
+<*>	build.py : takes no arguments
+	it has a list of programs of parsec that it builds using parsecmgmt;
+
+	## how to use:
+		'python build.py'
+
+	NOTE: the builds happen parallely, with the help of utilities/parallel_prog.py
+
+
+<*>	tools/addrtrace.cpp : pin tool for instrumenting programs and getting address trace;
+	in the output, for every memop, the tool notes the tid and address;
+	the generated output is written into the file output/addrtrace.out
+
+	## how to use: don't use it directly, you can use this using run.py
+
+	NOTE: instead of generating address trace, the tool generates the block addresses that the memop accesses
+
+
+<*>	run.py : takes arguments:
+		--tool (the pin tool that you want to instrument with);
+		--exe (name of the parsec program that you want to instrument, e.g. canneal);
+		--size (the size of the program that you want to run, e.g. simsmall);
+	this script will run the mentioned program using parsecmgmt and instrument it with PIN;
+	
+	## how to use: don't use it directly, you can use this using script_run.py
+
+
+<*> script_run.py : takes arguments
+		--size (the size of the program that you want to run, e.g., simsmall)
+	it has a list of parsec programs that are already built; 
+	it runs each program, and instruments it with tools/addrtrace.cpp; 
+	the output is saved to output/addrtrace.out; 
+	the script moves this to output/[args.size]/addrtrace_[program_name].out;
+
+	## how to use:
+		'python script_run.py --size simsmall'
+	NOTE: the programs are run sequentially, as unlike in build.py, where the builds happened parallely
+
+
+NOTE: all other files are temporaries/auxilliaries
