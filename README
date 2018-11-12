@@ -1,18 +1,28 @@
 # multilevel-cache-sim
 course project for CS622
+==========================
 
-notes on how to use parsecmgmt with pin:
-https://courses.cs.washington.edu/courses/cse471/14sp/hw/BranchPredictionHomework.pdf
+course website:
+https://www.cse.iitk.ac.in/users/mainakc/2018Autumn/lectures622.html
 
-code base for L1L2_LRU:
+code base for L1L2_LRU, L1cache_LRU:
 http://www.cse.iitk.ac.in/~mainakc/2018Autumn/lec622/assignment1-solution/inclusive.c
 
 code base for LLC_MIN:
 http://www.cse.iitk.ac.in/~mainakc/2018Autumn/lec622/assignment1-solution/inclusive-FA-MIN.c
 
-how to setup PIN: 
-http://www.cse.iitk.ac.in/~mainakc/2018Autumn/lec622/pin_setup.txt
 
-course website:
-https://www.cse.iitk.ac.in/users/mainakc/2018Autumn/lectures622.html
+<*> compile.c : driver script to compile programs
+	convention: 
+		the source code is in various folders, like cache or analysis;
+		the code is compiled into an executable which sits in the executable directory;
+	how to use:
+		put the compilation command in the list compile_tasks, you can comment out the rest of the commands;
+		in the command line use:
+			'python compile.py'
+
+
+=> for generating address trace, go to the directory named multilevel-cache-sim-pintool;
+=> for running cache simulators, ananlysis tools, go to the directory named executables, and run the appropriate script;
+
 

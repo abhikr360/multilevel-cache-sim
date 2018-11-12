@@ -1,0 +1,16 @@
+NOTE: for program description, please refer the README in the respective folders
+
+<*>	L1cache_LRU : source code is in folder named cache;
+	takes arguments:
+		input file (the file from which it can read the address trace)
+		output file (the file onto which it can dump the L2 trace)
+	
+	## how to use: don't use directly, you can use run_L1cache_LRU.py to run this
+	
+<*> run_L1cache_LRU.py : script to run L1cache_LRU;
+	
+	## how to use: in command line type:
+		'python run_L1cahce_LRU.py'
+
+	NOTE: please change the paths in the script for the program to run properly
+

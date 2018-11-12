@@ -1,0 +1,19 @@
+NOTE: all programs below are to be compiled for use;
+	on how to use the executables, please refer the README in the executable folder;
+
+<*>	L1L2cache_LRU.c : simulator for L1 and L2 cache;
+	LRU replacement policy;
+	for specifications of the caches, please refer:
+		https://www.cse.iitk.ac.in/users/mainakc/pub/iiswc13.pdf
+
+<*> L1cache_LRU.c : simulator for L1 stand alone cache;
+	LRU replacement policy;
+	the specification is same as of the L1 cache as given above;
+
+<*>	LLC_MIN.c : simulator of an offline LLC;
+	MIN replacement policy;
+	for specs, please refer:
+		https://www.cse.iitk.ac.in/users/mainakc/pub/iiswc13.pdf
+
+<*> LLC_MIN_meta.c : LLC_MIN which stores meta info for ananlysis later
+

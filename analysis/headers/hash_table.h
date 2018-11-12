@@ -9,7 +9,7 @@ typedef struct hashTableEntry_s {
    int sh_len;
    SharingHistoryEntry *sh; // sharing history
 
-   double pred;
+   double predictability_index;
    double entropy;
 
    struct hashTableEntry_s *next;

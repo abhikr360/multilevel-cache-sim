@@ -44,6 +44,7 @@ CacheTag** create_cache (int numset, int assoc) {
       assert(cache[i] != NULL);
       for ( j=0; j<assoc; j++) {
          cache[i][j].tag = INVALID_TAG;
+         cache[i][j].lru = 0;
       }
    }
    return cache;
@@ -66,22 +67,21 @@ Core* create_cpu (int num_cores) {
 
 int main (int argc, char **argv)
 {
+   /* declarations */
    int j, L1setid, maxindex, tid;
    unsigned long long block_addr, max;
    char output_name[256], input_name[256];
    FILE * fp_in;
    FILE * fp_out;
    int l1way;
-
    Core* cpu;
 
-   cpu = create_cpu(NUM_CORES);
 
+   cpu = create_cpu(NUM_CORES);
    if (argc != 3) {
       printf("Need two arguments: input file. Aborting...\n");
       exit (1);
    }
-
 
    sprintf(input_name, "%s", argv[1]);
    // sprintf(input_name, "../data/temp");
@@ -96,7 +96,6 @@ int main (int argc, char **argv)
       tid = tid % NUM_CORES;
 
       L1setid = block_addr % L1_NUMSET ;
-      // L2setid = block_addr % L2_NUMSET;
       /* L1 cache lookup */
       for (l1way=0; l1way<L1_ASSOC; l1way++) {
          if (cpu[tid].L1DataCache[L1setid][l1way].tag == block_addr) {
