@@ -27,7 +27,7 @@ typedef struct hashTableEntry_s {
 } HashTableEntry;
 
 
-HashTableEntry* create_hash_table(int size) {
+HashTableEntry* create_hash_table (int size) {
 /* create a hash table of (size=size) */
 	int j;
 	HashTableEntry* ht;
@@ -42,7 +42,7 @@ HashTableEntry* create_hash_table(int size) {
 }
 
 
-void fprint_sharing_history(HashTableEntry* ht, FILE* fp) {
+void fprint_sharing_history (HashTableEntry* ht, FILE* fp) {
 	int history_count=0;
 	int i;
 	HashTableEntry *ptr;
@@ -119,10 +119,11 @@ void build_hash_table (HashTableEntry *ht, FILE *fp_in) {
 				ptr->ilhead = (IntegerListEntry*)malloc(sizeof(IntegerListEntry));
 				assert(ptr->ilhead != NULL);
 				ptr->tail = ptr->ilhead;
-				ptr->tail->id = uniqueId;
-				ptr->tail->next = NULL;
 				ptr->next = NULL;
 				ptr->currentPtr = ptr->ilhead;
+				
+				ptr->tail->id = uniqueId;
+				ptr->tail->next = NULL;
 				prev->next = ptr;
 				ptr->sharing_history_head = NULL;
 				ptr->sharing_history_tail = NULL;

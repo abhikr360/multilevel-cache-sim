@@ -8,6 +8,8 @@ typedef struct {
 
 typedef struct {
 	/* declarations */
+	// total numebr of misses
+	unsigned long long total_miss_count;
 	/* number of fills that are shared reused, private reused, not reused */
 	unsigned long long count_shared_reuse_fills, count_private_reuse_fills, count_no_reuse_fills;
 	/* number of hits to shared blocks, private blocks */
@@ -20,10 +22,11 @@ typedef struct {
 } MetaData;
 
 
-void init_metadata () {
+MetaData* create_metadata () {
 	MetaData *metadata;
 	int i;
 	metadata = (MetaData*)malloc(sizeof(MetaData));
+	metadata->total_miss_count = 0;
 	metadata->count_shared_reuse_fills = 0;
 	metadata->count_private_reuse_fills = 0;
 	metadata->count_no_reuse_fills = 0;
@@ -35,6 +38,8 @@ void init_metadata () {
 	for (i=0; i<NUM_PROC; i++) {
 		metadata->count_sharers[i] = 0;
 	}
+
+	return metadata;
 }
 
 
@@ -61,7 +66,7 @@ CacheTag** create_cache (int numset, int assoc) {
 
 void flush_cache (CacheTag **LLCcache, HashTableEntry *ht, MetaData *metadata, unsigned long long uniqueId) {
 	HashTableEntry *ptr;
-	int hash_index, i, shared_reuse_flag, LLCsetid, llcway;
+	int hash_index, i, shared_reuse_flag, LLCsetid, llcway, private_reuse_flag;
 	unsigned long long block_addr;
 	
 	for (LLCsetid=0; LLCsetid<LLC_NUMSET; LLCsetid++) {
@@ -69,46 +74,73 @@ void flush_cache (CacheTag **LLCcache, HashTableEntry *ht, MetaData *metadata, u
 			block_addr = LLCcache[LLCsetid][llcway].tag;
 			if (block_addr == INVALID_TAG) continue;
 
-			shared_reuse_flag = 0;
+			shared_reuse_flag = 0; private_reuse_flag = 0;
 			for (i=0; i<NUM_PROC; i++) {
 				if (LLCcache[LLCsetid][llcway].use_count[i] > 0) shared_reuse_flag++;
+				if (LLCcache[LLCsetid][llcway].use_count[i] > private_reuse_flag) 
+					private_reuse_flag = LLCcache[LLCsetid][llcway].use_count[i];
 			}
+
+			metadata->count_sharers[shared_reuse_flag-1]++;
+
 			assert(shared_reuse_flag > 0);
+			assert(private_reuse_flag > 0);
+			
 			hash_index = block_addr % SIZE;
 			ptr = &ht[hash_index];
 			while (ptr != NULL) {
-				if (ptr->block_addr == block_addr) {
-					if (ptr->sharing_history_head == NULL) {
-						ptr->sharing_history_head = (SharingList*)malloc(sizeof(SharingList));
-						assert(ptr->sharing_history_head != NULL);
-						ptr->sharing_history_tail = ptr->sharing_history_head;
-
-						if (shared_reuse_flag > 1) ptr->sharing_history_tail->shared = 1;
-						else ptr->sharing_history_tail->shared = 0;
-
-						ptr->sharing_history_tail->id = uniqueId;
-
-						ptr->sharing_history_tail->next = NULL;
-					}
-					else {
-						assert(ptr->sharing_history_tail != NULL);
-						assert(ptr->sharing_history_tail->next == NULL);
-						ptr->sharing_history_tail->next = (SharingList*)malloc(sizeof(SharingList));
-						assert(ptr->sharing_history_tail->next != NULL);
-						ptr->sharing_history_tail = ptr->sharing_history_tail->next;
-
-						if (shared_reuse_flag > 1) ptr->sharing_history_tail->shared = 1;
-						else ptr->sharing_history_tail->shared = 0;
-
-						ptr->sharing_history_tail->id = uniqueId;
-
-						ptr->sharing_history_tail->next = NULL;
-					}
-					break;
-				}
+				if (ptr->block_addr == block_addr) 	break;
 				ptr = ptr->next;
 			}
 			assert(ptr != NULL);
+			if (ptr->sharing_history_head == NULL) {
+				ptr->sharing_history_head = (SharingList*)malloc(sizeof(SharingList));
+				assert(ptr->sharing_history_head != NULL);
+				ptr->sharing_history_tail = ptr->sharing_history_head;
+
+				if (shared_reuse_flag > 1) ptr->sharing_history_tail->shared = 1;
+				else ptr->sharing_history_tail->shared = 0;
+
+				ptr->sharing_history_tail->id = uniqueId;
+
+				ptr->sharing_history_tail->next = NULL;
+			}
+			else {
+				assert(ptr->sharing_history_tail != NULL);
+				assert(ptr->sharing_history_tail->next == NULL);
+				ptr->sharing_history_tail->next = (SharingList*)malloc(sizeof(SharingList));
+				assert(ptr->sharing_history_tail->next != NULL);
+				ptr->sharing_history_tail = ptr->sharing_history_tail->next;
+
+				if (shared_reuse_flag > 1) ptr->sharing_history_tail->shared = 1;
+				else ptr->sharing_history_tail->shared = 0;
+
+				ptr->sharing_history_tail->id = uniqueId;
+
+				ptr->sharing_history_tail->next = NULL;
+			}
+
+			if (shared_reuse_flag > 1) {
+				metadata->count_shared_reuse_fills++;
+				for (i=0; i<NUM_PROC; i++) {
+					metadata->count_shared_hits += LLCcache[LLCsetid][llcway].use_count[i];
+					metadata->count_shared_reuse += LLCcache[LLCsetid][llcway].use_count[i];
+				}
+				metadata->count_shared_reuse--;
+			}
+			else {
+				if (private_reuse_flag > 1) {
+					metadata->count_private_reuse_fills++;
+				}
+				else {
+					metadata->count_no_reuse_fills++;
+				}  
+				for (i=0; i<NUM_PROC; i++) {
+					metadata->count_private_hits += LLCcache[LLCsetid][llcway].use_count[i];
+					metadata->count_private_reuse += LLCcache[LLCsetid][llcway].use_count[i];
+				}
+				metadata->count_private_reuse--;
+			}
 		}
 	}
 }
@@ -116,7 +148,7 @@ void flush_cache (CacheTag **LLCcache, HashTableEntry *ht, MetaData *metadata, u
 
 void simulate (CacheTag **LLCcache, HashTableEntry *ht, FILE *fp_in, MetaData *metadata) {
 	// declarations
-	unsigned long long uniqueId = -1, block_addr, max, victim_block_addr;
+	unsigned long long uniqueId = 0, block_addr, max, victim_block_addr;
 	int tid, LLCsetid, llcway, hash_index, maxindex, victim_hash_index;
 	HashTableEntry *ptr, *victim_ptr;
 	int shared_reuse_flag, private_reuse_flag, i;
@@ -130,6 +162,7 @@ void simulate (CacheTag **LLCcache, HashTableEntry *ht, FILE *fp_in, MetaData *m
 		/* LLC cache lookup */
 		for (llcway=0; llcway<LLC_ASSOC; llcway++) {
 			if (LLCcache[LLCsetid][llcway].tag == block_addr) {
+				
 				/* LLC cache hit; Update access list */
 				assert(LLCcache[LLCsetid][llcway].htPtr != NULL);
 				assert(LLCcache[LLCsetid][llcway].htPtr->block_addr == block_addr);
@@ -140,6 +173,7 @@ void simulate (CacheTag **LLCcache, HashTableEntry *ht, FILE *fp_in, MetaData *m
 		}
 		if (llcway==LLC_ASSOC) {
 			/* LLC cache miss */
+			metadata->total_miss_count++;
 
 			/* Access list pointer needs to be advanced; 
 			Search the entry in hash table */
@@ -193,9 +227,12 @@ void simulate (CacheTag **LLCcache, HashTableEntry *ht, FILE *fp_in, MetaData *m
 
 				metadata->count_sharers[shared_reuse_flag-1]++;
 
+				assert(shared_reuse_flag > 0);
+				assert(private_reuse_flag > 0);
+
 				if (victim_ptr->sharing_history_head == NULL) {
 					victim_ptr->sharing_history_head = (SharingList*)malloc(sizeof(SharingList));
-					assert(victim_ptr != NULL);
+					assert(victim_ptr->sharing_history_head != NULL);
 					victim_ptr->sharing_history_tail = victim_ptr->sharing_history_head;
 
 					if (shared_reuse_flag > 1) victim_ptr->sharing_history_tail->shared = 1;
@@ -265,6 +302,7 @@ void simulate (CacheTag **LLCcache, HashTableEntry *ht, FILE *fp_in, MetaData *m
 		}
 	}
 
+	uniqueId++;
 	flush_cache(LLCcache, ht, metadata, uniqueId);
 }
 
