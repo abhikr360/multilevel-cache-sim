@@ -31,7 +31,7 @@ void update_patterns (Pattern **patterns, int num_bits, int* seq, int shared) {
 /* checks which pattern matches the sequence in seq;
 then updates the count accordingly*/
 	int num_patterns, i, j;
-
+// printf("MARK\n");
 	assert(shared == 0 || shared == 1);
 	num_patterns = (1 << num_bits);
 	for (i=0; i<num_patterns; i++) {
@@ -53,7 +53,7 @@ void clean_patterns (Pattern **patterns, int num_bits) {
 /* reinitializes the counts in patterns */
 	int i, num_patterns;
 	num_patterns = (1 << num_bits);
-	for (i=0; i<num_bits; i++) {
+	for (i=0; i<num_patterns; i++) {
 		patterns[i]->private_count = 0;
 		patterns[i]->shared_count = 0;
 	}
@@ -68,7 +68,8 @@ void display_patterns (Pattern** patterns, int num_bits) {
 		for (j=0; j<num_bits; j++) {
 			printf("%d ", patterns[i]->seq[j]);
 		}
-		printf("\n");
+		printf(" -- %d %d\n", 
+			patterns[i]->private_count, patterns[i]->shared_count);
 	}
 }
 
@@ -77,6 +78,7 @@ void free_patterns (Pattern **patterns, int num_bits) {
 
 	num_patterns = (1 << num_bits);
 	for (i=0; i<num_patterns; i++) {
+		free(patterns[i]->seq);
 		free(patterns[i]);
 	}
 	free(patterns);

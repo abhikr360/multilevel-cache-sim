@@ -62,36 +62,35 @@ int main (int argc, char **argv) {
 	if (NEXT_NBR==0) NEXT_NBR_NUM_BITS = 0;
 
 	/* compute other params */
-	PREV_NBR_NUM_PATTERNS = (1 << PREV_NBR_NUM_BITS);
-	NEXT_NBR_NUM_PATTERNS = (1 << NEXT_NBR_NUM_BITS);
-	num_bits = NUM_BITS;
-	if (PREV_NBR) {
-		num_bits += PREV_NBR_NUM_BITS;
-	}
-	if (NEXT_NBR) {
-		num_bits += NEXT_NBR_NUM_BITS;
-	}
+	// PREV_NBR_NUM_PATTERNS = (1 << PREV_NBR_NUM_BITS);
+	// NEXT_NBR_NUM_PATTERNS = (1 << NEXT_NBR_NUM_BITS);
+
+	num_bits = NUM_BITS + PREV_NBR_NUM_BITS + NEXT_NBR_NUM_BITS;
 	num_patterns = (1 << num_bits);
 
-	patterns = (Pattern**)init_patterns(num_bits);
+	// patterns = (Pattern**)init_patterns(num_bits);
 	addr_list = (List*)create_list();
 	ht = (HashTableEntry*)create_hash_table(SIZE);
 
 	/* display patterns */
-	display_patterns(patterns, num_bits);
+	// display_patterns(patterns, num_bits);
 
 	fp_in = fopen(input_name, "r");
 	assert(fp_in != NULL);
-	
+	printf("Building hash table ...\n");
 	build_hash_table(ht, fp_in, addr_list);
-
 	fclose(fp_in);
 	
+
+
 	/* compute the predictability */
 	fp_out_private = fopen(private_output_name, "w");
 	fp_out_global = fopen(global_output_name, "w");
-	// compute_predictability();
+	printf("computing predictability ...\n");
+	compute_predictability(
+		ht, addr_list, fp_out_private, fp_out_global, 
+		NUM_BITS, PREV_NBR, PREV_NBR_NUM_BITS, NEXT_NBR, NEXT_NBR_NUM_BITS);
 	fclose(fp_out_private);
-	fclose(fp_out_global);
+	fclose(fp_out_global);	
 	return 0;
 }

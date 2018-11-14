@@ -16,15 +16,15 @@ typedef struct hashTableEntry_s {
 } HashTableEntry;
 
 
-void copy_sharing_history (SharingHistoryEntry *src, SharingHistoryEntry *dst, int sh_len) {
-	int i;
-	assert(dst == NULL);
-	dst = (SharingHistoryEntry*)malloc(sh_len* sizeof(SharingHistoryEntry));
-	for (i=0; i<sh_len; i++) {
-		dst[i].shared = src[i].shared;
-		dst[i].id = src[i].shared;
-	}
-}
+// void copy_sharing_history (SharingHistoryEntry *src, SharingHistoryEntry *dst, int sh_len) {
+// 	int i;
+// 	assert(dst == NULL);
+// 	dst = (SharingHistoryEntry*)malloc(sh_len* sizeof(SharingHistoryEntry));
+// 	for (i=0; i<sh_len; i++) {
+// 		dst[i].shared = src[i].shared;
+// 		dst[i].id = src[i].shared;
+// 	}
+// }
 
 HashTableEntry* create_hash_table(int size) {
 /* create a hash table of (size=size) */
@@ -34,6 +34,7 @@ HashTableEntry* create_hash_table(int size) {
    assert(ht != NULL);
    for (j=0; j<SIZE; j++) {
       ht[j].block_addr = INVALID_TAG;
+      ht[j].sh = NULL;
       ht[j].sh_len = 0;
       ht[j].next = NULL;
    }
@@ -48,16 +49,18 @@ void build_hash_table (HashTableEntry* ht, FILE *fp_in, List *addr_list) {
 	assert(fp_in != NULL); 
 	assert(addr_list != NULL); 
 
-	while (!feof(fp_in)) {
-		fscanf(fp_in, "%llu", &block_addr);
+	// while (!feof(fp_in)) {
+	while (fscanf(fp_in, "%llu", &block_addr) == 1) {
+		// fscanf(fp_in, "%llu", &block_addr);
 		fscanf(fp_in, "%d", &sh_len);
 
+// printf("MARK %llu %d\n", block_addr, sh_len);
 		ListInsert(addr_list, block_addr);
 
 		hash_index = block_addr % SIZE;
 			
 		if (ht[hash_index].block_addr == INVALID_TAG) {
-			ht[hash_index].block_addr = block_addr;
+			// ht[hash_index].block_addr = block_addr;
 			ptr = &ht[hash_index];
 		}
 		else {
@@ -65,23 +68,24 @@ void build_hash_table (HashTableEntry* ht, FILE *fp_in, List *addr_list) {
 			ptr = &ht[hash_index];
 			while (ptr != NULL) {
 				if (ptr->block_addr == block_addr) {
-					assert(0);
+					// assert(0);
 					break;
 				}
 				prev = ptr;
 				ptr = ptr->next;
 			}
-			if (ptr == NULL) {
-				assert(prev->next == NULL);
-				ptr = (HashTableEntry*)malloc(sizeof(HashTableEntry));
-				assert(ptr != NULL);
-				ptr->block_addr = block_addr;
-				ptr->next = NULL;
-				prev->next = ptr;
-			}
+			assert(ptr == NULL);
+			assert(prev->next == NULL);
+
+			ptr = (HashTableEntry*)malloc(sizeof(HashTableEntry));
+			assert(ptr != NULL);
+			// ptr->block_addr = block_addr;
+			ptr->next = NULL;
+			prev->next = ptr;
 		}
 		assert(ptr != NULL);
-
+		ptr->block_addr = block_addr;
+		ptr->sh_len = sh_len;
 		ptr->sh = (SharingHistoryEntry*)malloc(sh_len*sizeof(SharingHistoryEntry));
 
 		for (i=0; i<sh_len; i++) {
