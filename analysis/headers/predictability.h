@@ -98,11 +98,11 @@ void _compute_predictability_alone (
 	Pattern **private_patterns, **global_patterns;
 	int *seq;
 	SharingHistoryEntry *sh;
-	int i, hash_index, j, shared;
+	int i, hash_index, j, shared, index;
 	unsigned long long block_addr;
 	ListEntry *list_head;
 	HashTableEntry *ptr;
-	double global_entropy;
+	double global_entropy, global_pred_index;
 
 	private_patterns = (Pattern**)init_patterns(NUM_BITS);
 	global_patterns = (Pattern**)init_patterns(NUM_BITS);
@@ -123,14 +123,21 @@ void _compute_predictability_alone (
 
 		for (j=0; j<NUM_BITS; j++) seq[j] = 0; 
 
-		for (i=0; i+NUM_BITS<ptr->sh_len; i++) {
-			for (j=0; j<NUM_BITS; j++) {
-				seq[j] = ptr->sh[i+j].shared;
+		for (i=0; i < ptr->sh_len; i++) {
+			index = i-1;
+			j = NUM_BITS-1;
+			while (j>=0 && index>=0) {
+				seq[j] = ptr->sh[index].shared;
+				index--;
+				j--;
 			}
+			// for (j=NUM; j<NUM_BITS; j++) {
+			// 	seq[j] = ptr->sh[i+j].shared;
+			// }
 			// for (j=0; j<NUM_BITS; j++) {
 			// 	printf("%d ", seq[j]);
 			// } printf("\n");
-			shared = ptr->sh[i+NUM_BITS].shared;
+			shared = ptr->sh[i].shared;
 			update_patterns(private_patterns, NUM_BITS, seq, shared);
 			update_patterns(global_patterns, NUM_BITS, seq, shared);
 		}
@@ -145,8 +152,8 @@ void _compute_predictability_alone (
 	global_entropy = get_entropy(global_patterns, NUM_BITS);
 	global_pred_index = get_predictability_index(global_patterns, NUM_BITS);
 
-	fprintf(fp_out_global, "%f ", global_entropy);
-	fprintf(fp_out_global, "%f\n", global_pred_index);
+	fprintf(fp_out_global, "%f ", global_pred_index);
+	fprintf(fp_out_global, "%f", global_entropy);
 
 	free_patterns(private_patterns, NUM_BITS);
 	free_patterns(global_patterns, NUM_BITS);
@@ -265,8 +272,8 @@ void _compute_predictability_together (
 
 	global_entropy = get_entropy(global_patterns, num_bits);
 	global_pred_index = get_predictability_index(global_patterns, num_bits);
-	fprintf(fp_out_global, "%f ", global_entropy);
-	fprintf(fp_out_global, "%f\n", global_pred_index);
+	fprintf(fp_out_global, "%f ", global_pred_index);
+	fprintf(fp_out_global, "%f", global_entropy);
 
 	free_patterns(private_patterns, num_bits);
 	free_patterns(global_patterns, num_bits);

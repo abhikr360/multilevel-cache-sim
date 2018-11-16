@@ -23,10 +23,6 @@ progs = [
 			'raytrace',
 			'streamcluster',
 			'vips', 
-
-			# 'swaptions', ERROR build
-			# 'dedup', ERROR build
-			# 'x264', ERROR run
  ]
 
 sizes = [
