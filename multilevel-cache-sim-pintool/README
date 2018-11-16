@@ -1,10 +1,15 @@
 NOTE: since the parsecmgmt tool gave some weird errors if the pintool was mentioned with relative path, I had to use absolute paths everywhere;
 so, please make appropriate modifications for the code to work
 
+how to setup parsec:
+http://parsec.cs.princeton.edu/
+
 how to setup pin tool:
-----------------------
 pin_setup.txt
 borrowed from: http://www.cse.iitk.ac.in/~mainakc/2018Autumn/lec622/pin_setup.txt
+
+how to use parsecmgmt with pin tool:
+https://courses.cs.washington.edu/courses/cse471/14sp/hw/BranchPredictionHomework.pdf
 
 tool description:
 -----------------

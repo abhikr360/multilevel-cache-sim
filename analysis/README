@@ -1,0 +1,12 @@
+NOTE: all programs below, which are in C, are to be compiled for use;
+	on how to use the executables, please refer the README in the executable folder;
+	all the programs in python can be used directly;
+
+this folder contains the source code used for analysis and constructing tables
+
+* predictability.c :
+	computes predictability index and entropy of for given LLC sharing histories
+
+* LLCmeta_table.py, LLCananlysis_table.py : these scripts are used for generating latex code from the output of predictability.c
+* run_LLCmeta_table.py, run_LLCananlysis_table.py: 
+	these scripts are used for running LLCmeta_table.py and LLCananlysis_table.py respectively with different inputs

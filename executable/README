@@ -1,16 +1,70 @@
 NOTE: for program description, please refer the README in the respective folders
 
-<*>	L1cache_LRU : source code is in folder named cache;
+
+* L1cache_LRU : source code is in folder named cache;
 	takes arguments:
 		input file (the file from which it can read the address trace)
 		output file (the file onto which it can dump the L2 trace)
 	
 	## how to use: don't use directly, you can use run_L1cache_LRU.py to run this
 	
-<*> run_L1cache_LRU.py : script to run L1cache_LRU;
+
+* run_L1cache_LRU.py : script to run L1cache_LRU;
 	
 	## how to use: in command line type:
-		'python run_L1cahce_LRU.py'
+		'python run_L1cache_LRU.py'
 
 	NOTE: please change the paths in the script for the program to run properly
 
+
+* L1L2cache_LRU : source code is in folder named cache;
+	takes arguments:
+		input file (the file from which it can read the address trace)
+		output file (the file onto which it can dump the LLC trace)
+
+	## how to use: don't use directly, you can use run_L1L2cache_LRU.py to run this
+
+
+* run_L1L2cache_LRU.py : script to run L1L2cache_LRU;
+	
+	## how to use: in command line type:
+		'python run_L1L2cache_LRU.py'
+
+	NOTE: please change the paths in the script for the program to run properly
+
+
+* LLC_MIN : source code is in folder named cache;
+	takes arguments:
+		input file (the file from which it can read the LLC/L2 trace)
+
+	## how to use: DON'T use this, this is just an example
+
+
+* LLC_MIN_meta : source code is in folde named cache;
+	takes arguments:
+		input file (the file from which it can read the LLC/L2 trace)
+		output_file (file in which it stores meta information, like number of cache misses)
+		sharing_history_file (file in which it stores the sharing history of each block)
+		LLC_NUMSET (number of sets in the 16 way LLC)
+
+	## how to use: don't use directly, you can use run_LLC_MIN_meta.py to run this
+
+
+* run_LLC_MIN_meta.py : script to run LLC_MIN_meta.py;
+	
+	## how to run: 
+		'python run_LLC_MIN_meta.py'
+
+	NOTE: please change the paths in the script for the program to run properly
+
+
+* predictabiltity : source code is in folder named analysis;
+	takes arguments:
+		input file - (the file containing the sharing histories)
+		output file - (the file in which it writes the predictability index and entropy)
+		number of bits - (sharing history window of the block)
+		previous neighbour active - (whether to consider sharing history of previous neghbour)
+		previous neighbour number of bits - (sharing history window of previous neighbour)
+		next neighbour active - (whether to consider sharing history of next neghbour)
+		next neighbour number of bits - (sharing history window of next neighbour)
+		

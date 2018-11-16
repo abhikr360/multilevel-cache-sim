@@ -15,5 +15,5 @@ NOTE: all programs below are to be compiled for use;
 	for specs, please refer:
 		https://www.cse.iitk.ac.in/users/mainakc/pub/iiswc13.pdf
 
-<*> LLC_MIN_meta.c : LLC_MIN which stores meta info for ananlysis later
+<*> LLC_MIN_meta.c : LLC_MIN which stores metadata for ananlysis later
 

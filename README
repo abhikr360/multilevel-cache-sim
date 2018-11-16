@@ -8,9 +8,10 @@ https://www.cse.iitk.ac.in/users/mainakc/2018Autumn/lectures622.html
 code base for L1L2_LRU, L1cache_LRU:
 http://www.cse.iitk.ac.in/~mainakc/2018Autumn/lec622/assignment1-solution/inclusive.c
 
-code base for LLC_MIN:
+code base for LLC_MIN, LLC_MIN_meta:
 http://www.cse.iitk.ac.in/~mainakc/2018Autumn/lec622/assignment1-solution/inclusive-FA-MIN.c
 
+Please go to each folder for and follow their respective README
 
 <*> compile.c : driver script to compile programs
 	convention: 
@@ -25,4 +26,5 @@ http://www.cse.iitk.ac.in/~mainakc/2018Autumn/lec622/assignment1-solution/inclus
 => for generating address trace, go to the directory named multilevel-cache-sim-pintool;
 => for running cache simulators, ananlysis tools, go to the directory named executables, and run the appropriate script;
 
-
+For any query contact:
+bera.mansih.kumar@gmail.com
