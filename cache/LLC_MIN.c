@@ -64,6 +64,7 @@ HashTableEntry* create_hash_table(int size) {
       ht[j].ilhead = NULL;
       ht[j].tail = NULL;
    }
+   return ht;
 }
 
 
