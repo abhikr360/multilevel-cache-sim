@@ -72,7 +72,7 @@ int main (int argc, char **argv)
 {
    int  i, LLCsetid, maxindex, tid;
    unsigned long long block_addr, max, *uniqueId;
-   char output_name[256], input_name[256];
+   char put_name[256], input_name[256];
    FILE *fp_in; FILE *fp_out;
    int llcway;
    HashTableEntry *ht, *prev, *ptr;
@@ -97,11 +97,11 @@ int main (int argc, char **argv)
 
    /* Build the hash table of accesses */
    sprintf(input_name, "%s", argv[1]);
-   sprintf(output_name, "%s", argv[2]);
+//    sprintf(output_name, "%s", argv[2]);
    fp_in = fopen(input_name, "r");
-   fp_out = fopen(output_name, "w");
+//    fp_out = fopen(output_name, "w");
    assert(fp_in != NULL);
-   assert(fp_out != NULL);
+//    assert(fp_out != NULL);
 
    while (!feof(fp_in)) {
       fscanf(fp_in, "%d %llu", &tid, &block_addr);
@@ -241,6 +241,6 @@ int main (int argc, char **argv)
       }
    }
 
-   fclose(fp_out);
+//    fclose(fp_out);
    return 0;
 }
